@@ -9,7 +9,7 @@ const defaultProps = {
   getData: d => d.points,
   getAngle: x => 0,
   fontSize: 24,
-  coordinateSystem: COORDINATE_SYSTEM.IDENTITY,
+  coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
   fp64: false,
 };
 

@@ -82,7 +82,7 @@ export default class EdgeLayer extends CompositeLayer {
         ),
         positionUpdateTrigger,
         pickable,
-        coordinateSystem: COORDINATE_SYSTEM.IDENTITY,
+        coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
         parameters: {
           depthTest: false,
         },
