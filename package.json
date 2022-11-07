@@ -11,18 +11,18 @@
     "react",
     "uber"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.es.js",
+  "main": "./dist-node-cjs/index.js",
+  "module": "./dist-node-esm/index.js",
   "browser": {
-    "./dist/index.js": "./dist/browser.es5.js",
-    "./dist/index.es.js": "./dist/browser.es5.es.js"
+    "./dist-node-cjs/index.js": "./dist-browser-cjs/index.js",
+    "./dist-node-esm/index.js": "./dist-browser-esm/index.js"
   },
   "es2015": {
-    "./dist/browser.es5.es.js": "./dist/browser.es2015.es.js"
+    "./dist/browser.es5.es.js": "./dist-browser-es2015/index.js"
   },
   "es2017": {
-    "./dist/browser.es5.es.js": "./dist/browser.es2017.es.js",
-    "./dist/browser.es2015.es.js": "./dist/browser.es2017.es.js"
+    "./dist/browser.es5.es.js": "./dist-browser-es2017/index.js",
+    "./dist/browser.es2015.es.js": "./dist-browser-es2017/index.js"
   },
   "scripts": {
     "clean": "rimraf lib dist",
@@ -122,7 +122,7 @@
     "webcola": "^3.3.6"
   },
   "peerDependencies": {
-    "react": "^16.5.0",
-    "react-dom": "^16.5.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

@@ -94,7 +94,7 @@ export default class GraphLayer extends CompositeLayer {
 
   forceUpdate() {
     if (this.context && this.context.layerManager) {
-      this.setLayerNeedsUpdate();
+      this.setNeedsUpdate();
       this.setChangeFlags({dataChanged: true});
     }
   }
