@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {PureComponent, useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import DeckGL from '@deck.gl/react';
 import {OrthographicView} from '@deck.gl/core';
@@ -45,186 +45,82 @@ const PositionedViewControl = ({
   </div>
 );
 
-export default class GraphGL extends PureComponent {
-  static displayName = 'GraphGL';
-
-  static propTypes = {
-    /** Input graph data */
-    graph: PropTypes.object.isRequired,
-    /** Layout algorithm */
-    layout: PropTypes.object.isRequired,
-    /** Node event callbacks */
-    nodeEvents: PropTypes.shape({
-      onClick: PropTypes.func,
-      onMouseLeave: PropTypes.func,
-      onHover: PropTypes.func,
-      onMouseEnter: PropTypes.func,
-    }).isRequired,
-    /** Declarative node style */
-    nodeStyle: PropTypes.arrayOf(
-      PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
-    ),
-    /** Declarative edge style */
-    edgeStyle: PropTypes.shape({
-      stroke: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-      strokeWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-      decorators: PropTypes.arrayOf(
-        PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
-      ),
-    }).isRequired,
-    /** Edge event callbacks */
-    edgeEvents: PropTypes.shape({
-      onClick: PropTypes.func,
-      onHover: PropTypes.func,
-    }),
-    /** The initial view state of the viewport */
-    initialViewState: PropTypes.shape({
-      target: PropTypes.arrayOf(PropTypes.number),
-      zoom: PropTypes.number,
-    }),
-    /** A component to control view state. */
-    ViewControlComponent: PropTypes.func,
-    /** A minimum scale factor for zoom level of the graph. */
-    minZoom: PropTypes.number,
-    /** A maximum scale factor for zoom level of the graph. */
-    maxZoom: PropTypes.number,
-    /** Padding for fitting entire graph in the screen. (pixel) */
-    viewportPadding: PropTypes.number,
-    /** Changes the scroll wheel sensitivity when zooming. This is a multiplicative modifier.
-      So, a value between 0 and 1 reduces the sensitivity (zooms slower),
-      and a value greater than 1 increases the sensitivity (zooms faster) */
-    wheelSensitivity: PropTypes.number,
-    /** Whether zooming the graph is enabled */
-    enableZooming: PropTypes.bool,
-    /** Whether panning the graph is enabled */
-    enablePanning: PropTypes.bool,
-    /** Whether dragging the node is enabled */
-    enableDragging: PropTypes.bool,
-    /** Resume layout calculation after dragging a node */
-    resumeLayoutAfterDragging: PropTypes.bool,
-  };
-
-  static defaultProps = {
-    graph: new Graph(),
-    layout: new SimpleLayout(),
-    nodeStyle: [],
-    nodeEvents: {
-      onMouseEnter: null,
-      onHover: null,
-      onMouseLeave: null,
-      onClick: null,
-      onDrag: null,
-    },
-    edgeStyle: {
-      decorators: [],
-      stroke: 'black',
-      strokeWidth: 1,
-    },
-    edgeEvents: {
-      onClick: null,
-      onHover: null,
-    },
-    initialViewState: INITIAL_VIEW_STATE,
-    ViewControlComponent: PositionedViewControl,
-    minZoom: -20,
-    maxZoom: 20,
-    viewportPadding: 50,
-    wheelSensitivity: 0.5,
-    enableZooming: true,
-    enablePanning: true,
-    enableDragging: false,
-    resumeLayoutAfterDragging: false,
-  };
-
-  state = {
-    viewState: {
-      ...INITIAL_VIEW_STATE,
-      ...this.props.initialViewState,
-    },
-  };
-
-  constructor(props) {
-    super(props);
-    this._engine = new GraphEngine();
-    this._graph = null;
-    this._layout = null;
-    this._setProps(this.props);
+const GraphGL = ({
+  graph = new Graph(),
+  layout = new SimpleLayout(),
+  nodeStyle = [],
+  nodeEvents = {
+    onMouseEnter: null,
+    onHover: null,
+    onMouseLeave: null,
+    onClick: null,
+    onDrag: null,
+  },
+  edgeStyle = {
+    decorators: [],
+    stroke: 'black',
+    strokeWidth: 1,
+  },
+  edgeEvents = {
+    onClick: null,
+    onHover: null,
+  },
+  initialViewState = INITIAL_VIEW_STATE,
+  ViewControlComponent = PositionedViewControl,
+  minZoom = -20,
+  maxZoom = 20,
+  viewportPadding = 50,
+  wheelSensitivity = 0.5,
+  enableZooming = true,
+  enablePanning = true,
+  enableDragging = false,
+  resumeLayoutAfterDragging = false,
+}) => {
+  if (!graph instanceof Graph) {
+    log.error('Invalid graph data class')();
+    return;
+  }
+  if (!layout instanceof BaseLayout) {
+    log.error('Invalid layout class')();
+    return;
   }
 
-  componentWillReceiveProps(nextProps) {
-    this._setProps(nextProps);
-  }
+  const [viewState, setViewState] = useState({
+    ...INITIAL_VIEW_STATE,
+    ...initialViewState,
+  });
 
-  _setProps = props => {
-    const {graph, layout} = props;
+  const [engine] = useState(new GraphEngine());
 
-    // set graph
-    const validGraph = graph instanceof Graph;
-    let graphChanged = false;
-    if (!validGraph) {
-      log.error('Invalid graph data class')();
-      return;
-    } else {
-      graphChanged = !graph.equals(this._graph);
-      if (graphChanged) {
-        this._graph = graph;
-      }
-    }
+  useEffect(() => {
+      engine.clear();
+      engine.run(graph, layout);
+  }, [graph, layout]);
 
-    // set layout
-    const validLayout = layout instanceof BaseLayout;
-    let layoutChanged = false;
-    if (!validLayout) {
-      log.error('Invalid layout class')();
-      return;
-    } else {
-      layoutChanged = !layout.equals(this._layout);
-      if (layoutChanged) {
-        this._layout = layout;
-      }
-    }
+  const onViewStateChange = useCallback(
+    ({viewState}) => setViewState(viewState),
+    [setViewState]
+  );
 
-    // if graph or layout is changed, re-run the layout calculation
-    if (graphChanged || layoutChanged) {
-      this._engine.clear();
-      this._engine.run(this._graph, this._layout);
-    }
-  };
+  const onResize = useCallback(
+    ({width, height}) =>
+      setViewState({
+        ...viewState,
+        width,
+        height,
+      }),
+    [viewState, setViewState]
+  );
 
-  // Relatively pan the graph by a specified position vector.
-  panBy = (dx, dy) =>
-    this.setState({
-      viewState: {
-        ...this.state.viewState,
-        target: [
-          this.state.viewState.target[0] + dx,
-          this.state.viewState.target[1] + dy,
-        ],
-      },
-    });
-
-  // Relatively zoom the graph by a delta zoom level
-  zoomBy = deltaZoom => {
-    const {minZoom, maxZoom} = this.props;
-    const newZoom = this.state.viewState.zoom + deltaZoom;
-    this.setState({
-      viewState: {
-        ...this.state.viewState,
-        zoom: Math.min(Math.max(newZoom, minZoom), maxZoom),
-      },
-    });
-  };
-
-  fitBounds = () => {
-    const {width, height} = this.state.viewState;
-    const {viewportPadding, minZoom, maxZoom} = this.props;
-    const data = this._engine.getGraph().getNodes();
+  const fitBounds = useCallback(() => {
+    const {width, height} = viewState;
+    const data = engine.getGraph().getNodes();
 
     // get the projected position of all nodes
-    const positions = data.map(d => this._engine.getNodePosition(d));
+    const positions = data.map((d) => engine.getNodePosition(d));
     // get the value range of x and y
-    const xExtent = extent(positions, d => d[0]);
-    const yExtent = extent(positions, d => d[1]);
+    const xExtent = extent(positions, (d) => d[0]);
+    const yExtent = extent(positions, (d) => d[1]);
     const newTarget = [
       (xExtent[0] + xExtent[1]) / 2,
       (yExtent[0] + yExtent[1]) / 2,
@@ -235,86 +131,131 @@ export default class GraphGL extends PureComponent {
     );
     // zoom value is at log scale
     const newZoom = Math.min(Math.max(minZoom, Math.log(zoom)), maxZoom);
-    this.setState({
-      viewState: {
-        ...this.state.viewState,
+    setViewState({
+        ...viewState,
         target: newTarget,
         zoom: newZoom,
-      },
     });
-  };
+  }, [viewState, setViewState, viewportPadding, minZoom, maxZoom]);
 
-  _onResize = ({width, height}) =>
-    this.setState({
-      viewState: {
-        ...this.state.viewState,
-        width,
-        height,
-      },
+  // Relatively pan the graph by a specified position vector.
+  const panBy = useCallback((dx, dy) =>
+    setViewState({
+        ...viewState,
+        target: [
+          viewState.target[0] + dx,
+          viewState.target[1] + dy,
+        ],
+    }), [viewState, setViewState]);
+
+  // Relatively zoom the graph by a delta zoom level
+  const zoomBy = useCallback((deltaZoom) => {
+    const newZoom = viewState.zoom + deltaZoom;
+    setViewState({
+        ...viewState,
+        zoom: Math.min(Math.max(newZoom, minZoom), maxZoom),
     });
+  }, [maxZoom, minZoom, viewState, setViewState]);
 
-  _onViewStateChange = ({viewState}) => this.setState({viewState});
+  return (
+    <div>
+      <DeckGL
+        width="100%"
+        height="100%"
+        getCursor={() => DEFAULT_CURSOR}
+        viewState={viewState}
+        onResize={onResize}
+        onViewStateChange={onViewStateChange}
+        views={[
+          new OrthographicView({
+            controller: {
+              minZoom,
+              maxZoom,
+              scrollZoom: enableZooming,
+              touchZoom: enableZooming,
+              doubleClickZoom: enableZooming,
+              dragPan: enablePanning,
+            },
+          }),
+        ]}
+        layers={[
+          new GraphLayer({
+            engine,
+            nodeStyle,
+            nodeEvents,
+            edgeStyle,
+            edgeEvents,
+            enableDragging,
+            resumeLayoutAfterDragging,
+          }),
+        ]}
+      />
+      <ViewControlComponent
+        fitBounds={fitBounds}
+        panBy={panBy}
+        zoomBy={zoomBy}
+        zoomLevel={viewState.zoom}
+        maxZoom={maxZoom}
+        minZoom={minZoom}
+      />
+    </div>
+  );
+};
 
-  render() {
-    const {
-      nodeEvents,
-      nodeStyle,
-      edgeStyle,
-      edgeEvents,
-      minZoom,
-      maxZoom,
-      enableDragging,
-      enablePanning,
-      enableZooming,
-      ViewControlComponent,
-      resumeLayoutAfterDragging,
-    } = this.props;
+GraphGL.propTypes = {
+  /** Input graph data */
+  graph: PropTypes.object.isRequired,
+  /** Layout algorithm */
+  layout: PropTypes.object.isRequired,
+  /** Node event callbacks */
+  nodeEvents: PropTypes.shape({
+    onClick: PropTypes.func,
+    onMouseLeave: PropTypes.func,
+    onHover: PropTypes.func,
+    onMouseEnter: PropTypes.func,
+  }).isRequired,
+  /** Declarative node style */
+  nodeStyle: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
+  ),
+  /** Declarative edge style */
+  edgeStyle: PropTypes.shape({
+    stroke: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    strokeWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
+    decorators: PropTypes.arrayOf(
+      PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
+    ),
+  }).isRequired,
+  /** Edge event callbacks */
+  edgeEvents: PropTypes.shape({
+    onClick: PropTypes.func,
+    onHover: PropTypes.func,
+  }),
+  /** The initial view state of the viewport */
+  initialViewState: PropTypes.shape({
+    target: PropTypes.arrayOf(PropTypes.number),
+    zoom: PropTypes.number,
+  }),
+  /** A component to control view state. */
+  ViewControlComponent: PropTypes.func,
+  /** A minimum scale factor for zoom level of the graph. */
+  minZoom: PropTypes.number,
+  /** A maximum scale factor for zoom level of the graph. */
+  maxZoom: PropTypes.number,
+  /** Padding for fitting entire graph in the screen. (pixel) */
+  viewportPadding: PropTypes.number,
+  /** Changes the scroll wheel sensitivity when zooming. This is a multiplicative modifier.
+   So, a value between 0 and 1 reduces the sensitivity (zooms slower),
+   and a value greater than 1 increases the sensitivity (zooms faster) */
+  wheelSensitivity: PropTypes.number,
+  /** Whether zooming the graph is enabled */
+  enableZooming: PropTypes.bool,
+  /** Whether panning the graph is enabled */
+  enablePanning: PropTypes.bool,
+  /** Whether dragging the node is enabled */
+  enableDragging: PropTypes.bool,
+  /** Resume layout calculation after dragging a node */
+  resumeLayoutAfterDragging: PropTypes.bool,
+};
 
-    return (
-      <div>
-        <DeckGL
-          width="100%"
-          height="100%"
-          ref={ref => {
-            this._deckRef = ref;
-          }}
-          getCursor={() => DEFAULT_CURSOR}
-          viewState={this.state.viewState}
-          onResize={this._onResize}
-          onViewStateChange={this._onViewStateChange}
-          views={[
-            new OrthographicView({
-              controller: {
-                minZoom,
-                maxZoom,
-                scrollZoom: enableZooming,
-                touchZoom: enableZooming,
-                doubleClickZoom: enableZooming,
-                dragPan: enablePanning,
-              },
-            }),
-          ]}
-          layers={[
-            new GraphLayer({
-              engine: this._engine,
-              nodeStyle,
-              nodeEvents,
-              edgeStyle,
-              edgeEvents,
-              enableDragging,
-              resumeLayoutAfterDragging,
-            }),
-          ]}
-        />
-        <ViewControlComponent
-          fitBounds={this.fitBounds}
-          panBy={this.panBy}
-          zoomBy={this.zoomBy}
-          zoomLevel={this.state.viewState.zoom}
-          maxZoom={maxZoom}
-          minZoom={minZoom}
-        />
-      </div>
-    );
-  }
-}
+export default GraphGL;

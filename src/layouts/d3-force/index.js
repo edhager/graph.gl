@@ -85,7 +85,6 @@ export default class D3ForceLayout extends BaseLayout {
         d3
           .forceLink(g.edges)
           .id(n => n.id)
-          .strength(this._strength)
       )
       .force(
         'charge',
@@ -103,12 +102,6 @@ export default class D3ForceLayout extends BaseLayout {
       .on('tick', this._callbacks.onLayoutChange)
       .on('end', this._callbacks.onLayoutDone);
   }
-
-  _strength = d3Edge => {
-    const sourceDegree = this._graph.getDegree(d3Edge.source.id);
-    const targetDegree = this._graph.getDegree(d3Edge.target.id);
-    return 1 / Math.min(sourceDegree, targetDegree, 1);
-  };
 
   start() {
     this._generateSimulator();

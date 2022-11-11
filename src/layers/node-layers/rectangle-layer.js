@@ -1,5 +1,5 @@
 import {CompositeLayer} from '@deck.gl/core';
-import {SolidPolygonLayer} from '@deck.gl/layers';
+import {PolygonLayer, SolidPolygonLayer} from '@deck.gl/layers';
 
 const generateRectangle = (node, {getWidth, getHeight, getPosition}) => {
   const pos = getPosition(node);
@@ -30,7 +30,7 @@ export default class RectangleLayer extends CompositeLayer {
     const getLineWidth = stylesheet.getDeckGLAccessor('getLineWidth');
 
     return [
-      new SolidPolygonLayer(
+      new PolygonLayer(
         this.getSubLayerProps({
           id: '__polygon-layer',
           data,
