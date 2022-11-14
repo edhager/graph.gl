@@ -55,7 +55,7 @@ const EDGE_DECORATOR_LAYER_MAP = {
 };
 
 const SHARED_LAYER_PROPS = {
-  coordinateSystem: COORDINATE_SYSTEM.IDENTITY,
+  coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
   parameters: {
     depthTest: false,
   },
@@ -94,7 +94,7 @@ export default class GraphLayer extends CompositeLayer {
 
   forceUpdate() {
     if (this.context && this.context.layerManager) {
-      this.setLayerNeedsUpdate();
+      this.setNeedsUpdate();
       this.setChangeFlags({dataChanged: true});
     }
   }
