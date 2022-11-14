@@ -62,7 +62,7 @@
     "@deck.gl/react": "^8.8.17",
     "cardinal-spline-js": "^2.3.6",
     "color": "^4.2.3",
-    "core-js": "3",
+    "core-js": "3.26.1",
     "d3": "^7.6.1",
     "d3-array": "^3.2.0",
     "d3-force": "^3.0.0",
