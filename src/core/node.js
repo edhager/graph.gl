@@ -7,7 +7,7 @@ export default class Node {
    * @param  {String|Number} options.id   - the unique ID of the node
    * @param  {Any} options.data - origin data reference
    */
-  constructor({id, data = {}}) {
+  constructor({id, selectable = false, highlightConnectedEdges = false, data = {}}) {
     this.id = id;
     // keep a reference to origin data
     this._data = data;
@@ -18,6 +18,10 @@ export default class Node {
     this.state = NODE_STATE.DEFAULT;
     // check the type of the object when picking engine gets it.
     this.isNode = true;
+    // Can the node be selected?
+    this._selectable = selectable;
+    // Should the state of this node affect the state of the connected edges?
+    this._highlightConnectedEdges = highlightConnectedEdges;
   }
 
   /**
@@ -134,14 +138,23 @@ export default class Node {
   }
 
   /**
+   * Get node state
+   * @returns {string} state - one of NODE_STATE
+   */
+  getState() {
+    return this.state;
+  }
+
+  /**
    * Add connected edges to the node
-   * @param {Edge || Edge[]} an edge or an array of edges to be added to this._connectedEdges
+   * @param {Edge || Edge[]} edge an edge or an array of edges to be added to this._connectedEdges
    */
   addConnectedEdges(edge) {
     const iterableEdges = Array.isArray(edge) ? edge : [edge];
     this._connectedEdges = iterableEdges.reduce(
       (res, e) => {
         res[e.id] = e;
+        e.addNode(this);
         return res;
       },
       {...this._connectedEdges}
@@ -150,11 +163,12 @@ export default class Node {
 
   /**
    * Remove edges from this._connectedEdges
-   * @param  {Edge | Edge[]} an edge or an array of edges to be removed from this._connectedEdges
+   * @param {Edge | Edge[]} edge an edge or an array of edges to be removed from this._connectedEdges
    */
   removeConnectedEdges(edge) {
     const iterableEdges = Array.isArray(edge) ? edge : [edge];
     iterableEdges.forEach(e => {
+      e.removeNode(this);
       delete this._connectedEdges[e.id];
     });
   }
@@ -163,6 +177,15 @@ export default class Node {
    * Clear this._connectedEdges
    */
   clearConnectedEdges() {
+    Object.values(this._connectedEdges).forEach(e => e.removeNode(this));
     this._connectedEdges = {};
+  }
+
+  isSelectable() {
+    return this._selectable;
+  }
+
+  shouldHighlightConnectedEdges() {
+    return this._highlightConnectedEdges;
   }
 }

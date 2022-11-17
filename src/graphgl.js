@@ -72,6 +72,7 @@ const GraphGL = ({
   viewportPadding = 50,
   wheelSensitivity = 0.5,
   enableZooming = true,
+  doubleClickZoom = true,
   enablePanning = true,
   enableDragging = false,
   resumeLayoutAfterDragging = false,
@@ -173,7 +174,7 @@ const GraphGL = ({
               maxZoom,
               scrollZoom: enableZooming,
               touchZoom: enableZooming,
-              doubleClickZoom: enableZooming,
+              doubleClickZoom: enableZooming && doubleClickZoom,
               dragPan: enablePanning,
             },
           }),
@@ -250,6 +251,8 @@ GraphGL.propTypes = {
   wheelSensitivity: PropTypes.number,
   /** Whether zooming the graph is enabled */
   enableZooming: PropTypes.bool,
+  /** double-clicking causes zoom */
+  doubleClickZoom: PropTypes.bool,
   /** Whether panning the graph is enabled */
   enablePanning: PropTypes.bool,
   /** Whether dragging the node is enabled */
