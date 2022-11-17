@@ -6,6 +6,13 @@ export const NODE_STATE = {
   SELECTED: 'selected',
 };
 
+export const EDGE_STATE = {
+  DEFAULT: 'default',
+  HOVER: 'hover',
+  DRAGGING: 'dragging',
+  SELECTED: 'selected',
+};
+
 // node visual marker type
 export const NODE_TYPE = {
   CIRCLE: 'CIRCLE',

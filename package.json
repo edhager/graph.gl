@@ -25,13 +25,13 @@
     "./dist/browser.es2015.es.js": "./dist-browser-es2017/index.js"
   },
   "scripts": {
-    "clean": "rimraf lib dist",
+    "clean": "rimraf lib dist*",
     "cover": "jest --coverage --colors",
     "build": "npm run clean && cup build",
     "prepublishOnly": "npm run build && node -e \"const fs = require('fs'); const pkg = JSON.parse(fs.readFileSync('./package.json', {encoding: 'utf8'})); delete pkg.engines; fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2)); console.log(pkg)\"",
     "lint": "eslint src/ stories/",
     "fix-lint": "eslint --fix src/ stories/",
-    "test": "jest",
+    "test": "npm run clean && jest",
     "test-debugger": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "prettier-all": "prettier --write 'src/**/*.{js,json,css}' 'test/**/*.{js,json,css}' 'examples/**/*.{js,json,css}' 'docs/**/*.{js,json,css}'",
     "-------- STORYBOOK --------": "",

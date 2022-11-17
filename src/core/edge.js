@@ -1,4 +1,6 @@
 // Basic data structure of an edge
+import {EDGE_STATE} from './constants';
+
 export default class Edge {
   /**
    * The constructor
@@ -21,6 +23,10 @@ export default class Edge {
     this._data = data;
     // check the type of the object when picking engine gets it.
     this.isEdge = true;
+    // Nodes at either end of this edge.
+    this._connectedNodes = {};
+    // The edge state.
+    this.state = EDGE_STATE.DEFAULT;
   }
 
   /**
@@ -88,5 +94,33 @@ export default class Edge {
    */
   setDataProperty(key, value) {
     this._data[key] = value;
+  }
+
+  /**
+   * Set edge state
+   * @param {String} state - one of EDGE_STATE
+   */
+  setState(state) {
+    this.state = state;
+  }
+
+  /**
+   * Get edge state
+   * @returns {string} state - one of EDGE_STATE
+   */
+  getState() {
+    return this.state;
+  }
+
+  addNode(node) {
+    this._connectedNodes[node.getId()] = node;
+  }
+
+  removeNode(node) {
+    delete this._connectedNodes[node.getId()];
+  }
+
+  getConnectedNodes() {
+    return Object.values(this._connectedNodes);
   }
 }
