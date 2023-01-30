@@ -42,4 +42,4 @@ The alignment baseline. Available options include 'top', 'center' and 'bottom'.
 
 ## Source
 
-[Storybook example](https://github.com/uber/graph.gl/blob/master/stories/node-types/stories.js)
+[Storybook example](TBD/master/stories/node-types/stories.js)

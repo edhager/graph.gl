@@ -5,7 +5,7 @@
 </p>
 
 
-This layout is an integration between [d3-force](https://github.com/d3/d3-force) and graph.gl to render the layout in a WebGL context.
+This layout is an integration between [d3-force](https://github.com/d3/d3-force) and react-graph-gl to render the layout in a WebGL context.
 
 ## Configurations
 
@@ -52,6 +52,6 @@ If getCollisionRadius is not specified, it defaults to zero radius for all nodes
 
 ## Source
 
- - [d3-force.js](https://github.com/uber/graph.gl/blob/master/src/layouts/d3-force/index.js)
+ - [d3-force.js](TBD/blob/master/src/layouts/d3-force/index.js)
 
- - [Storybook example](https://github.com/uber/graph.gl/blob/master/stories/basic-layouts/stories.js#L56-L71)
+ - [Storybook example](TBD/blob/master/stories/basic-layouts/stories.js#L56-L71)

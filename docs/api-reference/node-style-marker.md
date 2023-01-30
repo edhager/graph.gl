@@ -34,4 +34,4 @@ If a color value (hex code, color name, or array) is provided, it is used as the
 
 ## Source
 
-[Storybook example](https://github.com/uber/graph.gl/blob/master/stories/node-types/stories.js)
+[Storybook example](TBD/master/stories/node-types/stories.js)

@@ -1,6 +1,6 @@
 # Edge Class
 
-The `Edge` class is the base class of the edge, which provides a list of basic util functions to be used through out the applications.
+The `Edge` class is the base class of the edge, which provides a list of basic util functions to be used throughout the applications.
 
 
 ## Constructor
@@ -85,4 +85,4 @@ The value of the property.
 
 ## Source
 
-[src/core/edge.js](https://github.com/uber/graph.gl/blob/master/src/core/edge.js)
+[src/core/edge.js](TBD/blob/master/src/core/edge.js)

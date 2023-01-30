@@ -33,4 +33,4 @@ Example of nodeStyle:
 
 ## Source
 
-[Storybook example](https://github.com/uber/graph.gl/blob/master/stories/node-types/stories.js)
+[Storybook example](TBD/master/stories/node-types/stories.js)

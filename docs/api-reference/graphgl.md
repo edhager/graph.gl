@@ -11,7 +11,7 @@ import GraphGL, {
   JSONLoader,
   NODE_TYPE,
   D3ForceLayout
-} from 'graph.gl';
+} from 'react-graph-gl';
 
 const App = ({data}) => {
   const graph = JSONLoader({
@@ -63,12 +63,12 @@ const data = {
 
 Then, you can convert the data into `Graph` by `JSONLoader`:
 ```js
-import {JSONLoader} from 'graph.gl';
+import {JSONLoader} from 'react-graph-gl';
 const graph = JSONLoader({json: data});
 ```
 
 ### `layout` (Layout, required)
-Use one of the layouts provided by Graph.gl or create a new custom layout class by following the [instruction](/docs/advanced/custom-layout). For more detail, please see the [Layout](/docs/api-reference/layout) section.
+Use one of the layouts provided by react-graph-gl or create a new custom layout class by following the [instruction](/docs/advanced/custom-layout). For more detail, please see the [Layout](/docs/api-reference/layout) section.
 
 ### `initialViewState` (Object, optional)
 For more detail, please see [here](/docs/api-reference/viewport).
@@ -89,4 +89,4 @@ For more detail, please see the explanation of edgeStyle at [here](docs/api-refe
 For more detail, please see [here](docs/api-reference/interactions).
 
 ### Source
-[src/graphgl.js](https://github.com/uber/graph.gl/blob/master/src/graphgl.js)
+[src/graphgl.js](TBD/master/src/graphgl.js)
