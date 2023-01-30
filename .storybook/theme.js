@@ -13,5 +13,5 @@ export default create({
   inputTextColor: 'black',
   inputBorderRadius: 4,
 
-  brandTitle: 'Graph.gl'
+  brandTitle: 'react-graph-gl'
 });

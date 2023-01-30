@@ -1,6 +1,6 @@
 # Layout
 
-Use one of the layouts provided by Graph.gl. Right now Graph.gl provides D3-Force and Simple layout for basic usage.
+Use one of the layouts provided by react-graph-gl. Right now react-graph-gl provides D3-Force and Simple layout for basic usage.
 
 ## SimpleLayout
 Please see [here](/docs/api-reference/simple-layout).

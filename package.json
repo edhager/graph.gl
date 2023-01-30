@@ -1,15 +1,14 @@
 {
-  "name": "graph.gl",
+  "name": "react-graph-gl",
   "version": "1.0.0",
-  "description": "WebGL2-Powered Visualization Components for Graph Visualization",
+  "description": "WebGL2-Powered React Components for Graph Visualization",
   "keywords": [
     "graph",
     "visualization",
     "force-directed layout",
     "gpu",
     "deck.gl",
-    "react",
-    "uber"
+    "react"
   ],
   "main": "./dist-node-cjs/index.js",
   "module": "./dist-node-esm/index.js",
@@ -51,7 +50,6 @@
     "src",
     "static"
   ],
-  "author": "Javid Hsueh <javid@uber.com>",
   "license": "MIT",
   "resolutions": {
     "babel-core": "7.0.0-bridge.0"

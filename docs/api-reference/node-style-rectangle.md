@@ -35,4 +35,4 @@ If a function is provided, it is called on each rectangle to retrieve its outlin
 
 ## Source
 
-[Storybook example](https://github.com/uber/graph.gl/blob/master/stories/node-types/stories.js)
+[Storybook example](TBD/master/stories/node-types/stories.js)

@@ -21,7 +21,7 @@
 const path = require('path');
 
 const ALIASES = {
-  'graph.gl': path.resolve(__dirname, './src'),
+  'react-graph-gl': path.resolve(__dirname, './src'),
 };
 
 if (module.require) {

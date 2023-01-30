@@ -4,9 +4,9 @@
   <img src="/gatsby/images/layouts/simple.png" height="400" />
 </p>
 
-This example demonstrates how to render a pre-layoued graph using Graph.gl.
+This example demonstrates how to render a pre-layoued graph using react-graph-gl.
 You can pre-compute the layout and have the position information in each node.
-By simplily specifing the `nodePositionAccessor` through contructor, you'll be able to render the graph right away.
+By simply specifying the `nodePositionAccessor` through constructor, you'll be able to render the graph right away.
 
 ## Configurations
 
@@ -28,6 +28,6 @@ Example:
 ````
 
 ## Source
- - [simple-layout.js](https://github.com/uber/graph.gl/blob/master/src/layouts/simple-layout/index.js)
+ - [simple-layout.js](TBD/master/src/layouts/simple-layout/index.js)
 
- - [Storybook example](https://github.com/uber/graph.gl/blob/master/stories/basic-layouts/stories.js#L30-L45)
+ - [Storybook example](TBD/master/stories/basic-layouts/stories.js#L30-L45)
